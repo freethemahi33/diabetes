@@ -42,9 +42,9 @@ col_to_analyze = ['Pregnancies', 'Glucose', 'BloodPressure', 'SkinThickness', 'I
 
 # Check for null and duplicated rows
 
-print("Null count: ", df.isnull().sum())
-print("Duplicated count: ", df.duplicated().sum())
-print("Datatypes: ", df.dtypes)
+# print("Null count: ", df.isnull().sum())
+# print("Duplicated count: ", df.duplicated().sum())
+# print("Datatypes: ", df.dtypes)
 
 # Deal with pregnancies
 
@@ -155,10 +155,10 @@ with torch.no_grad():
         predicted = (outputs.data > 0.5).float()
         y_pred.extend(predicted.numpy())
         y_true.extend(target.numpy())
+
 cm = confusion_matrix(y_true, y_pred)
 sns.heatmap(cm, annot=True, fmt='g')
 plt.title('Confusion Matrix')
 plt.xlabel('Predicted')
 plt.ylabel('Actual')
 plt.show()
-
