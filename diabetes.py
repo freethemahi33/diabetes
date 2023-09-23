@@ -9,6 +9,8 @@ from sklearn.metrics import mean_squared_error
 from sklearn.metrics import accuracy_score
 from sklearn.tree import plot_tree
 from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import r2_score
+
 
 
 df = pd.read_csv('diabetes.csv')
@@ -57,6 +59,44 @@ def hist_with_bell(data, column_name, bin_count=20):
     plt.xlabel(column_name)
     plt.ylabel('Density')
     plt.show()
+
+def plotRegression(data, x_col, y_col, target_col):
+
+    # Select just two features for visualization
+    X_2D = df[[x_col, y_col]]
+    y_data = data[target_col]
+
+    # Split the data
+    X_train_2D, X_test_2D, y_train, y_test = train_test_split(X_2D, y, test_size=0.2, random_state=42)
+
+    # Train the logistic regression model on the two features
+    logisticModel_2D = LogisticRegression(random_state=42, max_iter=1000)
+    logisticModel_2D.fit(X_train_2D, y_train)
+
+    # Plotting
+    plt.figure(figsize=(10, 6))
+    plt.scatter(X_test_2D[x_col], X_test_2D[y_col], c=y_test, edgecolors='k', cmap=plt.cm.Paired)
+    ax = plt.gca()
+
+    # Set the limits
+    xlim = ax.get_xlim()
+    ylim = ax.get_ylim()
+
+    # Create grid to evaluate model
+    xx = np.linspace(xlim[0], xlim[1], 30)
+    yy = np.linspace(ylim[0], ylim[1], 30)
+    YY, XX = np.meshgrid(yy, xx)
+    xy = np.vstack([XX.ravel(), YY.ravel()]).T
+    Z = logisticModel_2D.decision_function(xy).reshape(XX.shape)
+
+    # Plot decision boundary and margins
+    ax.contour(XX, YY, Z, levels=[0], alpha=0.5, linestyles=['-'])
+
+    plt.xlabel(x_col)
+    plt.ylabel(y_col)
+    plt.title('Logistic Regression Decision Boundary')
+    plt.show()
+
 
 
 def summaryStats(data):
@@ -150,6 +190,8 @@ logisticModel = LogisticRegression(random_state=42, max_iter=1000)
 logisticModel.fit(X_train, y_train)
 
 logisticPrediction = logisticModel.predict(X_test)
+
+plotRegression(df, 'Pregnancies', 'Age', 'Outcome')
 
 # EVALUATE MODEL
 
